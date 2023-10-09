@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="{{url_for('static', filename='js/jquery-3.1.1.min.js')}}"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+        a {
+            text-decoration: none;
+            color: #000000;
+        }
+        a:hover{
+            text-decoration:none;
+            color: #000000;
+        }
+        div.col-sm-4, div.col-sm-2 {
+            /*border: 1px solid black;*/
+            margin-right: 50px;
+            margin-bottom: 50px;
+        }
+
+        div.row{
+            margin-left: 100px;
+            text-align:center
+        }
+
+        img.icon_large{
+            height: 100px;
+        }
+
+        div.col-sm-4:hover{
+            background-color: #00FFFF;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="content" style="margin-top:100px; margin-bottom: 100px">
+
+            {# all static images reference the app's static folder and do not exist with the dashboard #}
+            {% if (flash_msg_dict is defined) %}
+                {% if (flash_msg_dict['bad'] is defined) %}
+                    {% for fm_key in flash_msg_dict['bad'] %}
+                        <div>{{fm_key}} {{flash_msg_dict['bad'][fm_key][0]}}</div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if (flash_msg_dict['good'] is defined) %}
+                    {% for fm_key in flash_msg_dict['good'] %}
+                        <div>{{fm_key}} {{flash_msg_dict['good'][fm_key]}}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+
+            <div class="container">
+                <form class="col-xs-4 form-signin" method="POST" action="/login/validate" >
+                <h2 class="form-signin-heading" style="text-align:center">Please sign in</h2>
+                    <label for="inputEmail" class="sr-only">Email address</label>
+                    <input name="user_email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+                    <label  for="inputPassword" class="sr-only">Password</label>
+                    <input type="password" name="user_password" id="inputPassword" class="form-control" placeholder="Password" required="">
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                  </form>
+            </div>
+
+        </div>
+    </div>
+    <div id="footer">
+        <div class="panel-footer-1">
+            <section>
+                <div class="textwidget">
+                    <a href="">Data Security</a> -
+                    <a href="">Terms of Service</a> -
+                    <a href="">Privacy Policy</a> &nbsp; &nbsp;   &copy; Copyright 2016
+                </div>
+            </section>
+        </div>
+            <!-- Bootstrap core JavaScript-->
+
+        <script src="{{url_for('static', filename='js/moment.js')}}"></script>
+        <script src="{{url_for('static', filename='js/bootstrap-plugins/transition.js')}}"></script>
+        <script src="{{url_for('static', filename='js/bootstrap-plugins/collapse.js')}}"></script>
+        <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    </div>
+</body>
+</html>

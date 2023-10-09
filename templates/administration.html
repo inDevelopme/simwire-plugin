@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+{% block content %}
+<style>
+  a {
+    text-decoration: none;
+    color: #000000;
+  }
+  a:hover{
+    text-decoration:none;
+    color: #000000;
+  }
+  div.col-sm-4, div.col-sm-2 {
+    /*border: 1px solid black;*/
+    margin-right: 50px;
+    margin-bottom: 50px;
+
+  }
+
+  div.row{
+    margin-left: 100px;
+    text-align:center
+
+  }
+
+  img.icon_large{
+    height: 100px;
+  }
+
+  div.col-sm-4:hover{
+    background-color: #00FFFF;
+  }
+
+</style>
+{# all static images reference the app's static folder and do not exist with the dashboard #}
+    <h1>Administration page</h1>
+{% endblock content %}

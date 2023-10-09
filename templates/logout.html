@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="{{url_for('static', filename='js/jquery-3.1.1.min.js')}}"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+        a {
+            text-decoration: none;
+            color: #000000;
+        }
+        a:hover{
+            text-decoration:none;
+            color: #000000;
+        }
+        div.col-sm-4, div.col-sm-2 {
+            /*border: 1px solid black;*/
+            margin-right: 50px;
+            margin-bottom: 50px;
+        }
+
+        div.row{
+            margin-left: 100px;
+            text-align:center
+        }
+
+        img.icon_large{
+            height: 100px;
+        }
+
+        div.col-sm-4:hover{
+            background-color: #00FFFF;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="content" style="margin-top:100px; margin-bottom: 100px; text-align: center">
+            <h3> You have successfully Logged out</h3>
+            <h5> Click here to <a href="/login"><u>login</u></a></h5>
+        </div>
+    </div>
+    <div id="footer">
+        <div class="panel-footer-1">
+            <section>
+                <div class="textwidget">
+                    <a href="">Data Security</a> -
+                    <a href="">Terms of Service</a> -
+                    <a href="">Privacy Policy</a> &nbsp; &nbsp;   &copy; Copyright 2016
+                </div>
+            </section>
+        </div>
+            <!-- Bootstrap core JavaScript-->
+
+        <script src="{{url_for('static', filename='js/moment.js')}}"></script>
+        <script src="{{url_for('static', filename='js/bootstrap-plugins/transition.js')}}"></script>
+        <script src="{{url_for('static', filename='js/bootstrap-plugins/collapse.js')}}"></script>
+        <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    </div>
+</body>
+</html>
