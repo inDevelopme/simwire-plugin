@@ -1,0 +1,50 @@
+# version of docker, been the same for years
+version: "3.9"
+services:
+  #name of the container/service
+  web:
+    depends_on:
+      - mysql
+    build:
+      #source code for the application
+      context: .
+      # file the containing the build instructions
+      dockerfile: Dockerfile
+
+    # name of the image built by Dockerfile
+    image:
+      indevelopme-simwire-plugin:local
+
+    # container environment settings
+    environment:
+      - PORT=80
+
+    # the point of this volume is to prevent the requirement to run
+    # docker-compose up --build after every change to docker-compose.yml
+    volumes:
+        - staticfiles:/app/static/
+        - logvolume01:/var/log
+    links:
+      - mysql
+    ports:
+      - "9000:80"
+
+  mysql:
+    image: mysql:8.0.17
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: helloworld
+      MYSQL_DATABASE: simportal
+    ports:
+      - "4306:3306"
+    expose:
+      - "3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  logvolume01: {}
+  staticfiles:
+    external: true
+  mysql_data:
