@@ -46,5 +46,5 @@ services:
 volumes:
   logvolume01: {}
   staticfiles:
-    external: true
+    external: false
   mysql_data:
