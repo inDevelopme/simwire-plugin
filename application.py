@@ -1,9 +1,27 @@
 from flask import Flask
+from flask_session import Session
+
+# it is critical that instance variables stay in a segment of code
+# that never needs to change such as the current instance's environment name
+from _env_variables import *
+
+# load the business access object for communicating with the database
+from simcore.salchemy.bao import SalchemyBAO
 from pathlib import Path
 from flask import render_template
 from flask_cors import CORS
 app = application = Flask(__name__)
 CORS(app)
+
+app.config.from_object(Config)
+
+# sqlalchemy needs to know the database configuration
+db_bao = SalchemyBAO(Config.MYSQL_CONFIGURATION)
+
+# Session.sid is not possible without this
+session = Session(app)
+with app.app_context():
+    session.app.session_interface.db.create_all()
 
 
 # load the views
