@@ -1,10 +1,54 @@
-from flask import Flask
+# implemented to get operation system information
+import os
 from pathlib import Path
+from flask import Flask
+from flask_session import Session
+from dotenv import load_dotenv
+from os.path import join, dirname
+from settings.database import Config
+
+# it is critical that instance variables stay in a segment of code
+# that never needs to change such as the current instance's environment name
+
+# load the business access object for communicating with the database
+from simcore.salchemy.bao import SalchemyBAO
 from flask import render_template
 from flask_cors import CORS
+
 app = application = Flask(__name__)
 CORS(app)
 
+# setup reader for environment file
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+
+# load environment variables
+# if environment is not defined / locl
+
+# todo: For now we will use a try block to prevent EC2 instance in EB from going down
+# We want to make it so that this application checks deployed, local, none existing
+# It should not attempt a database connection without any environmental variables
+try:
+    ENV_NAME = os.environ.get("ENV_NAME")
+    if (ENV_NAME is None) or (ENV_NAME == "local"):
+        MYSQL_USER = os.environ.get("MYSQL_USER")
+        MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD")
+        MYSQL_DB = os.environ.get("MYSQL_DB")
+        MYSQL_HOST = os.environ.get("MYSQL_HOST")
+
+        Config.SQLALCHEMY_DATABASE_URI = \
+            'mysql://' + MYSQL_USER + ':' + MYSQL_PASSWORD + '@' + MYSQL_HOST + '/' + MYSQL_DB
+
+    app.config.from_object(Config)
+    # sqlalchemy needs to know the database configuration
+    db_bao = SalchemyBAO(Config.MYSQL_CONFIGURATION)
+
+    # Session.sid is not possible without this
+    session = Session(app)
+    with app.app_context():
+        session.app.session_interface.db.create_all()
+except TypeError as e:
+    print(e)
 
 # load the views
 @app.route('/')
