@@ -49,6 +49,8 @@ try:
         session.app.session_interface.db.create_all()
 except TypeError as e:
     print(e)
+except Exception as e:
+    print(e)
 
 # load the views
 @app.route('/')
