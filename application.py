@@ -54,6 +54,8 @@ except TypeError as e:
 except Exception as e:
     # This will happen particularly when a database connection is not possible
     print(e)
+except Exception as e:
+    print(e)
 
 
 # load the views
