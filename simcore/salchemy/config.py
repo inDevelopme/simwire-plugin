@@ -1,1 +1,1 @@
-VALID_CONNECTION_TYPE = ['mysql']
+VALID_CONNECTION_TYPE = ['mysql', 'mysql+pymysql']

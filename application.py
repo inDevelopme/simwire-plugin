@@ -35,9 +35,9 @@ try:
         MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD")
         MYSQL_DB = os.environ.get("MYSQL_DB")
         MYSQL_HOST = os.environ.get("MYSQL_HOST")
-
+        MYSQL_CONNECTOR = os.environ.get("MYSQL_CONNECTOR")
         Config.SQLALCHEMY_DATABASE_URI = \
-            'mysql://' + MYSQL_USER + ':' + MYSQL_PASSWORD + '@' + MYSQL_HOST + '/' + MYSQL_DB
+            MYSQL_CONNECTOR + '://' + MYSQL_USER + ':' + MYSQL_PASSWORD + '@' + MYSQL_HOST + '/' + MYSQL_DB
 
     app.config.from_object(Config)
     # sqlalchemy needs to know the database configuration
@@ -48,9 +48,15 @@ try:
     with app.app_context():
         session.app.session_interface.db.create_all()
 except TypeError as e:
+    # This will happen when the environment variables are not strings
+    print(e)
+
+except Exception as e:
+    # This will happen particularly when a database connection is not possible
     print(e)
 except Exception as e:
     print(e)
+
 
 # load the views
 @app.route('/')
