@@ -1,2 +1,6 @@
+# do not want the idea folder
 virt
 .github/
+.env
+.env.local
+.idea

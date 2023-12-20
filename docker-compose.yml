@@ -34,7 +34,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: helloworld
-      MYSQL_DATABASE: simportal
+      MYSQL_DATABASE: simwire_plugin
     ports:
       - "4306:3306"
     expose:

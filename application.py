@@ -1,9 +1,54 @@
-from flask import Flask
+# implemented to get operation system information
+import os
 from pathlib import Path
+from flask import Flask
+from flask_session import Session
+from dotenv import load_dotenv
+from os.path import join, dirname
+from settings.database import Config
+
+# it is critical that instance variables stay in a segment of code
+# that never needs to change such as the current instance's environment name
+# load the business access object for communicating with the database
+from simcore.salchemy.bao import SalchemyBAO
 from flask import render_template
 from flask_cors import CORS
+
 app = application = Flask(__name__)
 CORS(app)
+
+environment_filepaths = [
+    join(dirname(__file__), '.env.local'),
+    join(dirname(__file__), '.env.aws')
+]
+
+for environment_file in environment_filepaths:
+    # setup reader for environment file
+    dotenv_path = join(environment_file)
+    load_dotenv(dotenv_path)
+
+# todo: For now we will use a try block to prevent EC2 instance in EB from going down
+# We want to make it so that this application checks deployed, local, none existing
+# It should not attempt a database connection without any environmental variables
+
+ENV_NAME = os.environ.get("ENV_NAME")
+MYSQL_USER = os.environ.get("MYSQL_USER")
+MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD")
+MYSQL_DB = os.environ.get("MYSQL_DB")
+MYSQL_HOST = os.environ.get("MYSQL_HOST")
+MYSQL_CONNECTOR = os.environ.get("MYSQL_CONNECTOR")
+Config.SQLALCHEMY_DATABASE_URI = \
+    MYSQL_CONNECTOR + '://' + MYSQL_USER + ':' + MYSQL_PASSWORD + '@' + MYSQL_HOST + '/' + MYSQL_DB
+
+app.config.from_object(Config)
+# sqlalchemy needs to know the database configuration
+db_bao = SalchemyBAO(Config.MYSQL_CONFIGURATION)
+
+# TODO: Fix issue where Flask-Session create 2 rows every x seconds.
+# Session.sid is not possible without this
+# session = Session(app)
+# with app.app_context():
+#     session.app.session_interface.db.create_all()
 
 
 # load the views
