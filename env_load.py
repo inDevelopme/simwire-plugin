@@ -37,17 +37,22 @@ class Config(object):
             dotenv_path = join(environment_file)
             load_dotenv(dotenv_path)
 
-        ENV_NAME = os.environ.get("ENV_NAME")
-        if (ENV_NAME is None) or (ENV_NAME == "local"):
-            MYSQL_USER = os.environ.get("MYSQL_USER")
-            MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD")
-            MYSQL_DB = os.environ.get("MYSQL_DB")
-            MYSQL_HOST = os.environ.get("MYSQL_HOST")
-            MYSQL_CONNECTOR = os.environ.get("MYSQL_CONNECTOR")
-            MYSQL_PORT  = os.environ.get("MYSQL_PORT")
-            self.SQLALCHEMY_DATABASE_URI = \
-                MYSQL_CONNECTOR + '://' \
-                + MYSQL_USER + ':' + MYSQL_PASSWORD + '@' \
-                + MYSQL_HOST + ':' + MYSQL_PORT + '/' \
-                + MYSQL_DB
-            self.SECRET_KEY = 'your secret key'
+        self.SECRET_KEY = os.environ.get("SECRET_KEY")
+
+        ENV_DEBUG = int(os.environ.get("ENV_DEBUG"))
+        MYSQL_USER = os.environ.get("MYSQL_USER")
+        MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD")
+        MYSQL_DB = os.environ.get("MYSQL_DB")
+        MYSQL_CONNECTOR = os.environ.get("MYSQL_CONNECTOR")
+        MYSQL_HOST = os.environ.get("MYSQL_CONTAINER_HOST")
+        MYSQL_PORT = os.environ.get("MYSQL_PORT")
+        # USE PYCHARM CONFIGURATION WHEN RUNNING IN DEBUG MODE
+        if (ENV_DEBUG == 1):
+            MYSQL_HOST = os.environ.get("MYSQL_PYCHARM_HOST")
+
+        self.SQLALCHEMY_DATABASE_URI = \
+            MYSQL_CONNECTOR + '://' \
+            + MYSQL_USER + ':' + MYSQL_PASSWORD + '@' \
+            + MYSQL_HOST + ':' + MYSQL_PORT + '/' \
+            + MYSQL_DB
+
