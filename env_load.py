@@ -44,6 +44,10 @@ class Config(object):
             MYSQL_DB = os.environ.get("MYSQL_DB")
             MYSQL_HOST = os.environ.get("MYSQL_HOST")
             MYSQL_CONNECTOR = os.environ.get("MYSQL_CONNECTOR")
+            MYSQL_PORT  = os.environ.get("MYSQL_PORT")
             self.SQLALCHEMY_DATABASE_URI = \
-                MYSQL_CONNECTOR + '://' + MYSQL_USER + ':' + MYSQL_PASSWORD + '@' + MYSQL_HOST + '/' + MYSQL_DB
+                MYSQL_CONNECTOR + '://' \
+                + MYSQL_USER + ':' + MYSQL_PASSWORD + '@' \
+                + MYSQL_HOST + ':' + MYSQL_PORT + '/' \
+                + MYSQL_DB
             self.SECRET_KEY = 'your secret key'
