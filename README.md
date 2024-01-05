@@ -17,3 +17,19 @@ The below code controls the libraries which are installed in the containers and 
 `pip freeze > requirements.txt`  
 ***OR***  
 `pip freeze | sed 's/==/>=/g' > requirements.txt` 
+
+
+### Connecting to database container
+These are the setting you will need to access the container locally.
+HOST = localhost
+User = root
+Password = MYSQL_ROOT_PASSWORD
+Database = MYSQL_DATABASE
+
+### Seeding the database container
+The database will be created automatically when the application is rebuild using the --build tag. However, the build does not seed the database with data. 
+You will have to add your first user for this reason. This addition can be done by simply inserting a user into the user table. 
+You do not need to worry about the password column just yet. We will be adding the password column and requiring a password to be set soon. 
+Use something like this:  
+
+`insert into simwire_plugin.users (username, email) values ('testing@testing.com', 'testing@testing.com');`
