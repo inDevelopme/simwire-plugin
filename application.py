@@ -83,7 +83,7 @@ def exclude_health_check_routes():
             return jsonify(status='ok')
         except (TypeError, ValueError) as e:
             # Handle any exceptions that may occur during the health check
-            return jsonify(status='error', message=str(e)), 500  # Return a 500 Internal Server Error on failure
+            return jsonify(status='error', message='error'), 500  # Return a 500 Internal Server Error on failure
 
 
 @app.route('/health_check')
@@ -95,7 +95,7 @@ def health_check():
         return jsonify(status='ok')
     except (TypeError, ValueError) as e:
         # Handle any exceptions that may occur during the health check
-        return jsonify(status='error', message=str(e)), 500  # Return a 500 Internal Server Error on failure
+        return jsonify(status='error', message='error'), 500  # Return a 500 Internal Server Error on failure
 
 
 def get_extra_files():
