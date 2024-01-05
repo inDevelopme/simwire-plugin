@@ -18,7 +18,6 @@ The below code controls the libraries which are installed in the containers and 
 ***OR***  
 `pip freeze | sed 's/==/>=/g' > requirements.txt` 
 
-
 ### Connecting to database container
 These are the setting you will need to access the container locally.
 HOST = localhost
@@ -33,3 +32,5 @@ You do not need to worry about the password column just yet. We will be adding t
 Use something like this:  
 
 `insert into simwire_plugin.users (username, email) values ('testing@testing.com', 'testing@testing.com');`
+
+
