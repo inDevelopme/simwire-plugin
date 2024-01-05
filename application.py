@@ -1,23 +1,12 @@
 from env_load import Config
 from flask_cors import CORS
 from pathlib import Path
-from flask import Flask, jsonify, request
-from flask_login import LoginManager
-from blueprints import home_bp, auth_bp, admin_bp
+from flask import Flask, render_template, jsonify, request, flash, url_for, redirect
+from flask_login import LoginManager, login_required, current_user, logout_user, login_user
 from models import db, User
-
 
 app = Flask(__name__)
 CORS(app)
-
-
-def get_extra_files():
-    for bp in (app.blueprints or {}).values():
-        macros_dir = Path(bp.root_path)
-        for filepath in macros_dir.rglob('*.html'):
-            yield str(filepath)
-
-
 config = Config()
 config.get_environment_config()
 config.set_server_side_session(db)
@@ -43,6 +32,50 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+# load the views
+@app.route('/homepage')
+@login_required
+def landing_page():
+    return f"Welcome, {current_user.id}! This is a protected page." + str(url_for('landing_page'))
+
+
+@app.route('/')
+def index():
+    return "this is the index page"
+
+
+@app.route('/admin')
+@login_required
+def admin_landing_page():
+    return render_template('administration.html')
+
+
+# renders the manual login page
+@app.route('/login', methods=['GET'])
+def login():
+    return render_template('login.html')
+
+
+@app.route('/login', methods=['POST'])
+def login_validate():
+    username = request.form['username']
+    user = User.query.filter_by(username=username).first()
+    if user: #  and check_password_hash(user.password_hash, password):
+        # If authentication is successful, log the user in
+        login_user(user)
+        flash('Logged in successfully!', 'success')
+        return redirect(url_for('landing_page'))
+
+    flash('Login failed. Please check your credentials and try again.', 'danger')
+    return redirect(url_for('login'))
+
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    logout_user()
+    return render_template('logout.html')
+
+
 @app.before_request
 def exclude_health_check_routes():
     if request.path.startswith('/health_check'):
@@ -65,9 +98,12 @@ def health_check():
         return jsonify(status='error', message='error'), 500  # Return a 500 Internal Server Error on failure
 
 
-app.register_blueprint(home_bp)
-app.register_blueprint(auth_bp)
-app.register_blueprint(admin_bp)
+def get_extra_files():
+    for bp in (app.blueprints or {}).values():
+        macros_dir = Path(bp.root_path)
+        for filepath in macros_dir.rglob('*.html'):
+            yield str(filepath)
+
 
 # run the app.
 if __name__ == "__main__":
