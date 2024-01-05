@@ -81,7 +81,7 @@ def exclude_health_check_routes():
     if request.path.startswith('/health_check'):
         try:
             return jsonify(status='ok')
-        except Exception as e:
+        except (TypeError, ValueError) as e:
             # Handle any exceptions that may occur during the health check
             return jsonify(status='error', message=str(e)), 500  # Return a 500 Internal Server Error on failure
 
@@ -93,7 +93,7 @@ def health_check():
         # Perform a minimal check (e.g., check the database connection)
         # If using SQLAlchemy, roll back any uncommitted transactions to avoid session creation
         return jsonify(status='ok')
-    except Exception as e:
+    except (TypeError, ValueError) as e:
         # Handle any exceptions that may occur during the health check
         return jsonify(status='error', message=str(e)), 500  # Return a 500 Internal Server Error on failure
 
