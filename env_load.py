@@ -39,7 +39,7 @@ class Config(object):
 
         self.SECRET_KEY = os.environ.get("SECRET_KEY")
 
-        ENV_DEBUG = int(os.environ.get("ENV_DEBUG"))
+        RUN_WEB_USING_IDE = int(os.environ.get("RUN_WEB_USING_IDE"))
         MYSQL_USER = os.environ.get("MYSQL_USER")
         MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD")
         MYSQL_DB = os.environ.get("MYSQL_DB")
@@ -47,7 +47,7 @@ class Config(object):
         MYSQL_HOST = os.environ.get("MYSQL_CONTAINER_HOST")
         MYSQL_PORT = os.environ.get("MYSQL_PORT")
         # USE PYCHARM CONFIGURATION WHEN RUNNING IN DEBUG MODE
-        if (ENV_DEBUG == 1):
+        if RUN_WEB_USING_IDE == 1:
             MYSQL_HOST = os.environ.get("MYSQL_PYCHARM_HOST")
 
         self.SQLALCHEMY_DATABASE_URI = \
