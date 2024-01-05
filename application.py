@@ -1,76 +1,14 @@
-# implemented to get operation system information
-import os
-from pathlib import Path
-from flask import Flask
-from flask_session import Session
-from dotenv import load_dotenv
-from os.path import join, dirname
-from settings.database import Config
-
-# it is critical that instance variables stay in a segment of code
-# that never needs to change such as the current instance's environment name
-# load the business access object for communicating with the database
-from simcore.salchemy.bao import SalchemyBAO
-from flask import render_template
+from env_load import Config
 from flask_cors import CORS
+from pathlib import Path
+from flask import Flask, jsonify, request
+from flask_login import LoginManager
+from blueprints import home_bp, auth_bp, admin_bp
+from models import db, User
 
-app = application = Flask(__name__)
+
+app = Flask(__name__)
 CORS(app)
-
-environment_filepaths = [
-    join(dirname(__file__), '.env.local'),
-    join(dirname(__file__), '.env.aws')
-]
-
-for environment_file in environment_filepaths:
-    # setup reader for environment file
-    dotenv_path = join(environment_file)
-    load_dotenv(dotenv_path)
-
-# todo: For now we will use a try block to prevent EC2 instance in EB from going down
-# We want to make it so that this application checks deployed, local, none existing
-# It should not attempt a database connection without any environmental variables
-
-ENV_NAME = os.environ.get("ENV_NAME")
-MYSQL_USER = os.environ.get("MYSQL_USER")
-MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD")
-MYSQL_DB = os.environ.get("MYSQL_DB")
-MYSQL_HOST = os.environ.get("MYSQL_HOST")
-MYSQL_CONNECTOR = os.environ.get("MYSQL_CONNECTOR")
-Config.SQLALCHEMY_DATABASE_URI = \
-    MYSQL_CONNECTOR + '://' + MYSQL_USER + ':' + MYSQL_PASSWORD + '@' + MYSQL_HOST + '/' + MYSQL_DB
-
-app.config.from_object(Config)
-# sqlalchemy needs to know the database configuration
-db_bao = SalchemyBAO(Config.MYSQL_CONFIGURATION)
-
-# TODO: Fix issue where Flask-Session create 2 rows every x seconds.
-# Session.sid is not possible without this
-# session = Session(app)
-# with app.app_context():
-#     session.app.session_interface.db.create_all()
-
-
-# load the views
-@app.route('/')
-def homepage():
-    return render_template('homepage.html')
-
-
-@app.route('/admin')
-def admin_landing_page():
-    return render_template('administration.html')
-
-
-# renders the manual login page
-@app.route('/login', methods=['GET', 'POST'])
-def user_login():
-    return render_template('login.html')
-
-
-@app.route('/logout', methods=['GET'])
-def user_logout():
-    return render_template('logout.html')
 
 
 def get_extra_files():
@@ -79,6 +17,57 @@ def get_extra_files():
         for filepath in macros_dir.rglob('*.html'):
             yield str(filepath)
 
+
+config = Config()
+config.get_environment_config()
+config.set_server_side_session(db)
+
+# sqlalchemy needs to know the database configuration
+app.config.from_object(config)
+
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+# initialize sqlalchemy
+db.init_app(app)
+
+with app.app_context():
+    db.create_all()
+
+
+# User loader function for Flask-Login
+@login_manager.user_loader
+def load_user(user_id):
+    # Replace this with your logic for loading users from a database
+    return User.query.get(int(user_id))
+
+
+@app.before_request
+def exclude_health_check_routes():
+    if request.path.startswith('/health_check'):
+        try:
+            return jsonify(status='ok')
+        except (TypeError, ValueError) as e:
+            # Handle any exceptions that may occur during the health check
+            return jsonify(status='error', message='error'), 500  # Return a 500 Internal Server Error on failure
+
+
+@app.route('/health_check')
+def health_check():
+    # Minimal health check logic here (e.g., check database connection)
+    try:
+        # Perform a minimal check (e.g., check the database connection)
+        # If using SQLAlchemy, roll back any uncommitted transactions to avoid session creation
+        return jsonify(status='ok')
+    except (TypeError, ValueError) as e:
+        # Handle any exceptions that may occur during the health check
+        return jsonify(status='error', message='error'), 500  # Return a 500 Internal Server Error on failure
+
+
+app.register_blueprint(home_bp)
+app.register_blueprint(auth_bp)
+app.register_blueprint(admin_bp)
 
 # run the app.
 if __name__ == "__main__":
