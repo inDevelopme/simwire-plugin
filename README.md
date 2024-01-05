@@ -3,12 +3,12 @@ You can build this application using `docker-compose up --build -d`.
 
 
 ### connect using pycharm
-This requires .env.local to have: `MYSQL_PYCHARM_HOST=localhost` AND `ENV_DEBUG=1`.
+This requires .env.local to have: `MYSQL_PYCHARM_HOST=localhost` AND `RUN_WEB_USING_IDE=1`.
 Our PyCharm is configured to run in debugger which as you can imagine greatly improved our development speed.
 To make this work we run using application.py 
 
 #### connect using container
-This requires .env.local to have `MYSQL_CONTAINER_HOST=mysql` and `ENV_DEBUG=0`.
+This requires .env.local to have `MYSQL_CONTAINER_HOST=mysql` and `RUN_WEB_USING_IDE=0`.
 This way the container is connected to directly.
 
 ### how we update the requirements file locally

@@ -31,12 +31,13 @@ services:
 
   mysql:
     image: mysql:8.0.17
+    privileged: true
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: helloworld
       MYSQL_DATABASE: simwire_plugin
     ports:
-      - "4306:3306"
+      - "3306:3306"
     expose:
       - "3306"
 
