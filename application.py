@@ -7,7 +7,7 @@ from blueprints import home_bp, auth_bp, admin_bp
 from models import db, User
 
 
-app = Flask(__name__)
+application = app = Flask(__name__)
 CORS(app)
 
 
